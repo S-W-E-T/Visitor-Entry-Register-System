@@ -5,6 +5,8 @@ import {images} from '../../constants'
 import FormFeild from '@/components/FormFeild'
 import CustomButton from '../../components/CustomButton'
 import { Link, router } from 'expo-router'
+import SelectButton from '@/components/SelectButton'
+
 // import { createUser } from '../../lib/appwrite'
 const signup = () => {
  const [form,setForm] = useState({username:'',email:'',password:''});
@@ -27,13 +29,13 @@ const signup = () => {
 //   }
     
 //  }
-
+  const options = ['Admin', 'Guard'];
 
   return (
     <SafeAreaView className='bg-primary h-full'>
       <GestureHandlerRootView>
       <ScrollView>
-        <View className='w-full min-h-[90vh] justify-center px-4 my-6'>
+        <View className='w-full min-h-[100vh] justify-center px-4 my-6'>
           <Image source={images.logo} resizeMode='contain' className='w-[200px] h-[85px]' />
           <Text className='text-2xl text-white text-semibold mt-10 font-psemibold'>Register to Vers</Text>
 
@@ -53,8 +55,9 @@ const signup = () => {
           value={form.password} 
           handleChangeText={(e)=>setForm({...form,password:e})} 
           otherStyles='mt-7' />
+          <SelectButton title='Select your Role' containerStyle='mt-7' options={options} optionStyle='bg-secondary'/>
           <CustomButton title='Sign Up' containerStyle='mt-7' 
-          isLoading={isSubmitting} />
+          handlePress={()=>router.push('/home')} />
           <View className='justify-center pt-5 flex-row gap-2'>
             <Text className='text-lg font-pregular text-gray-100'>
                 Already have an account?

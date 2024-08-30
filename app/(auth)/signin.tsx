@@ -4,12 +4,16 @@ import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler
 import {images} from '../../constants'
 import FormFeild from '@/components/FormFeild'
 import CustomButton from '../../components/CustomButton'
-import { Link, router } from 'expo-router'
+import { Link, router, useNavigation } from 'expo-router'
 // import { signIn } from '../../lib/appwrite'
 const signin = () => {
  const [form,setForm] = useState({email:'',password:''});
  const [isSubmitting, setIsSubmitting] = useState(false);
-
+ const navigation = useNavigation();
+//  const handleSignin = () => {
+//   console.log('Go to Home page');
+//   navigation.navigate('home'); // Navigate to the Home screen
+// };
 //  const submit= async () =>{
 //   if(!form.email||!form.password){
 //     Alert.alert('Error','Please fill in all the feilds')
@@ -48,8 +52,7 @@ const signin = () => {
           value={form.password} 
           handleChangeText={(e)=>setForm({...form,password:e})} 
           otherStyles='mt-7' />
-          <CustomButton title='Sign In' containerStyle='mt-7' 
-          isLoading={isSubmitting} />
+          <CustomButton title='Sign In' containerStyle='mt-7' handlePress={()=>router.push('/home')} ></CustomButton>
           <View className='justify-center pt-5 flex-row gap-2'>
             <Text className='text-lg font-pregular text-gray-100'>
                 Don't have account?
