@@ -1,6 +1,9 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const apiUrl = "https://vers-backend.onrender.com/api/v1/";
+import Constants from "expo-constants";
+
+const apiUrl =
+  Constants.expoConfig?.extra?.apiUrl || "https://vers-backend.onrender.com";
 
 const apiService = axios.create({
   baseURL: apiUrl,
