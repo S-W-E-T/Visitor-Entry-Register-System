@@ -22,7 +22,7 @@ const index = () => {
     "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   });
-
+  //trial
   //useEffect: allow us to perform some action while the page is loading
   useEffect(()=>{
     if(error) throw error;
