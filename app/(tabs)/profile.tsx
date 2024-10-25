@@ -1,8 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
-const profile = () => {
+
+// Profile component including the LocationScreen content
+const Profile=() => {
   return (
     <SafeAreaView>
       {/* You must start your coding after this */}
@@ -11,6 +15,6 @@ const profile = () => {
       </View>
     </SafeAreaView>
   )
-}
+} 
 
-export default profile
+export default Profile;
