@@ -21,7 +21,13 @@ import SelectButton from "@/components/SelectButton";
 import { useSignup } from "@/hooks/authHooks/useSignup";
 
 const signup = () => {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+    phoneNumber: "",
+  });
   const { signUpUser, loading, error } = useSignup();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,8 +62,8 @@ const signup = () => {
 
             <FormFeild
               title="Username"
-              value={form.username}
-              handleChangeText={(e) => setForm({ ...form, username: e })}
+              value={form.name}
+              handleChangeText={(e) => setForm({ ...form, name: e })}
               otherStyles="mt-7"
             />
             <FormFeild
@@ -71,6 +77,12 @@ const signup = () => {
               title="Password"
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
+              otherStyles="mt-7"
+            />
+            <FormFeild
+              title="Phone Number"
+              value={form.phoneNumber}
+              handleChangeText={(e) => setForm({ ...form, phoneNumber: e })}
               otherStyles="mt-7"
             />
             <SelectButton
