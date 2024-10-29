@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollViewComponent,
-  ViewComponent,
-  Image,
-  Alert,
-} from "react-native";
+import { View, Text, SafeAreaView, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import {
   GestureHandlerRootView,
@@ -15,12 +7,11 @@ import {
 import { images } from "../../constants";
 import FormFeild from "@/components/FormFeild";
 import CustomButton from "../../components/CustomButton";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import SelectButton from "@/components/SelectButton";
-
 import { useSignup } from "@/hooks/authHooks/useSignup";
 
-const signup = () => {
+const Signup = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -28,20 +19,30 @@ const signup = () => {
     role: "",
     phoneNumber: "",
   });
+
   const { signUpUser, loading, error } = useSignup();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignup = async () => {
-    console.log("Sign up...");
-    const signupData = {
-      name: "John Doe",
-      email: "john@example.com",
-      phoneNumber: "1234567890",
-      password: "password123",
-      role: "USER",
-    };
+    if (
+      !form.name ||
+      !form.email ||
+      !form.password ||
+      !form.role ||
+      !form.phoneNumber
+    ) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    try {
+      console.log(form);
+      await signUpUser(form);
+    } catch (err) {
+      Alert.alert("Error", err.message || "Something went wrong");
+    }
+  };
 
-    await signUpUser(signupData);
+  const handleRoleSelect = (selectedRole) => {
+    setForm((prev) => ({ ...prev, role: selectedRole }));
   };
 
   const options = ["Admin", "Guard"];
@@ -63,33 +64,51 @@ const signup = () => {
             <FormFeild
               title="Username"
               value={form.name}
-              handleChangeText={(e) => setForm({ ...form, name: e })}
+              handleChangeText={(text) =>
+                setForm((prev) => ({ ...prev, name: text }))
+              }
               otherStyles="mt-7"
             />
             <FormFeild
               title="Email"
               value={form.email}
-              handleChangeText={(e) => setForm({ ...form, email: e })}
+              handleChangeText={(text) =>
+                setForm((prev) => ({ ...prev, email: text }))
+              }
               otherStyles="mt-7"
               keyboardType="email-address"
             />
             <FormFeild
               title="Password"
               value={form.password}
-              handleChangeText={(e) => setForm({ ...form, password: e })}
+              handleChangeText={(text) =>
+                setForm((prev) => ({ ...prev, password: text }))
+              }
               otherStyles="mt-7"
+              secureTextEntry
             />
             <FormFeild
               title="Phone Number"
               value={form.phoneNumber}
-              handleChangeText={(e) => setForm({ ...form, phoneNumber: e })}
+              handleChangeText={(text) =>
+                setForm((prev) => ({ ...prev, phoneNumber: text }))
+              }
               otherStyles="mt-7"
+              keyboardType="phone-pad"
             />
             <SelectButton
               title="Select your Role"
               containerStyle="mt-7"
               options={options}
               optionStyle="bg-secondary"
+              value={
+                form.role === "ADMIN"
+                  ? "Admin"
+                  : form.role === "USER"
+                  ? "Guard"
+                  : ""
+              }
+              onSelect={handleRoleSelect}
             />
             <CustomButton
               title="Sign Up"
@@ -115,6 +134,4 @@ const signup = () => {
   );
 };
 
-export default signup;
-
-// com.aman.aora
+export default Signup;

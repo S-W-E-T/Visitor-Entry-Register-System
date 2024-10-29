@@ -1,21 +1,29 @@
-import { View , Text } from "react-native";
+import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const SelectButton = ({title,handlePress,containerStyle,textStyle,isLoading,options,optionStyle}) => {
-
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectOption, setSelectOption] = useState(null);
+const SelectButton = ({
+  title,
+  containerStyle,
+  textStyle,
+  options,
+  optionStyle,
+  value,
+  onSelect,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <View className={`space-y-2 ${containerStyle}`}>
-        <Text className={`text-base text-gray-100 font-pmedium`}>{title}</Text>
+      <Text className={`text-base text-gray-100 font-pmedium`}>{title}</Text>
       <TouchableOpacity
         className={`border-2 border-black-100 flex-row rounded-2xl w-full h-16 justify-between px-4 bg-black-100 focus:border-secondary items-center`}
         onPress={() => setIsOpen(!isOpen)}
       >
-        <Text className={`text-white font-psemibold text-lg ${textStyle}`}>{selectOption || "Select an Option"}</Text>
+        <Text className={`text-white font-psemibold text-lg ${textStyle}`}>
+          {value || "Select an Option"}
+        </Text>
         <Icon
           name={isOpen ? "arrow-drop-up" : "arrow-drop-down"}
           size={35}
@@ -24,16 +32,18 @@ const SelectButton = ({title,handlePress,containerStyle,textStyle,isLoading,opti
       </TouchableOpacity>
 
       {isOpen && (
-        <View className={`relative w-full mt-1 max-h-60 border border-gray-500 ${optionStyle} shadow rounded-lg`}>
+        <View
+          className={`absolute top-24 w-full z-50 max-h-60 border border-gray-500 ${optionStyle} shadow rounded-lg`}
+        >
           <ScrollView>
             {options.map((option, index) => (
               <TouchableOpacity
                 key={index}
                 className="items-center justify-center p-4 border-b border-black"
                 onPress={() => {
-                  setSelectOption(option);
+                  const roleValue = option === "Admin" ? "ADMIN" : "USER";
+                  onSelect(roleValue);
                   setIsOpen(false);
-                  console.log(`${option} selected`);
                 }}
               >
                 <Text className="font-psemibold text-gray-800">{option}</Text>
