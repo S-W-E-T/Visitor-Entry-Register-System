@@ -31,3 +31,27 @@ export interface SignUpResponse {
     accessApproved: boolean;
   };
 }
+
+// Types for login
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  token: string;
+  user: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    role: string;
+    accessApproved: boolean;
+  };
+}
+
+export interface UseLoginResult {
+  error: string | null;
+  loading: boolean;
+  loginUser: (data: LoginData) => Promise<boolean>;
+}

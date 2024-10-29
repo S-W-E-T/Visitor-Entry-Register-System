@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { TouchableOpacity } from "react-native";
 import React from "react";
 
@@ -18,9 +18,13 @@ const CustomButton = ({
       }`}
       activeOpacity={0.7}
     >
-      <Text className={`text-primary font-psemibold text-lg ${textStyle}`}>
-        {title}
-      </Text>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#fff" /> // Spinner color can be adjusted
+      ) : (
+        <Text className={`text-primary font-psemibold text-lg ${textStyle}`}>
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };
