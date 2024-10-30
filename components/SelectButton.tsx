@@ -11,6 +11,7 @@ const SelectButton = ({
   optionStyle,
   value,
   onSelect,
+  onLoading,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -20,6 +21,7 @@ const SelectButton = ({
       <TouchableOpacity
         className={`border-2 border-black-100 flex-row rounded-2xl w-full h-16 justify-between px-4 bg-black-100 focus:border-secondary items-center`}
         onPress={() => setIsOpen(!isOpen)}
+        disabled={onLoading}
       >
         <Text className={`text-white font-psemibold text-lg ${textStyle}`}>
           {value || "Select an Option"}

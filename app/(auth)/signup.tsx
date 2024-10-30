@@ -68,6 +68,7 @@ const Signup = () => {
                 setForm((prev) => ({ ...prev, name: text }))
               }
               otherStyles="mt-7"
+              onLoading={loading}
             />
             <FormFeild
               title="Email"
@@ -77,6 +78,7 @@ const Signup = () => {
               }
               otherStyles="mt-7"
               keyboardType="email-address"
+              onLoading={loading}
             />
             <FormFeild
               title="Password"
@@ -86,6 +88,7 @@ const Signup = () => {
               }
               otherStyles="mt-7"
               secureTextEntry
+              onLoading={loading}
             />
             <FormFeild
               title="Phone Number"
@@ -95,6 +98,7 @@ const Signup = () => {
               }
               otherStyles="mt-7"
               keyboardType="phone-pad"
+              onLoading={loading}
             />
             <SelectButton
               title="Select your Role"
@@ -109,6 +113,7 @@ const Signup = () => {
                   : ""
               }
               onSelect={handleRoleSelect}
+              onLoading={loading}
             />
             <CustomButton
               title="Sign Up"
