@@ -21,6 +21,10 @@ const SignIn = () => {
 
   const handleLogin = async () => {
     console.log("form in handle login", form);
+    if (!form.email || !form.password) {
+      Alert.alert("Invalid Input", "Please fill all the fields");
+      return;
+    }
     const success = await loginUser(form);
     if (success) {
       router.push("/home");
@@ -49,12 +53,14 @@ const SignIn = () => {
               handleChangeText={(e) => setForm({ ...form, email: e })}
               otherStyles="mt-7"
               keyboardType="email-address"
+              isLoading={loading}
             />
             <FormFeild
               title="Password"
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
               otherStyles="mt-7"
+              isLoading={loading}
             />
             <CustomButton
               title="Sign In"

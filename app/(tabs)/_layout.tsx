@@ -4,6 +4,7 @@ import { Tabs } from "expo-router";
 import { icons } from "../../constants";
 import Icons from "react-native-vector-icons/Ionicons";
 import Iconsplus from "react-native-vector-icons/AntDesign";
+import { useAuth } from "@/context/AuthContext";
 
 const TabIcon = ({ icons, color, name, focused, size }) => {
   return (
@@ -15,9 +16,7 @@ const TabIcon = ({ icons, color, name, focused, size }) => {
         className={size}
       />
       <Text
-        className={`${
-          focused ? "font-psemibold" : "font-pregular"
-        } text-xs`}
+        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
         style={{ color: color }}
       >
         {name}
@@ -27,6 +26,8 @@ const TabIcon = ({ icons, color, name, focused, size }) => {
 };
 
 const TabsLayout = () => {
+  const { isVerified } = useAuth();
+
   return (
     <>
       <Tabs
@@ -69,12 +70,15 @@ const TabsLayout = () => {
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
                 icons={icons.bookmark}
-                color={color}
+                color={isVerified ? color : "#CDCDE0"}
                 name="Bookmarks"
-                focused={focused}
+                focused={focused && isVerified}
                 size="w-6 h-6"
               />
             ),
+            tabBarItemStyle: {
+              pointerEvents: isVerified ? "auto" : "none",
+            },
           }}
         />
         <Tabs.Screen
@@ -87,18 +91,21 @@ const TabsLayout = () => {
                 <Iconsplus
                   name="pluscircle"
                   size={60}
-                  color={!focused ? "#d3d3d3" : "#FFA001"}
+                  color={isVerified && focused ? "#FFA001" : "#d3d3d3"}
                 />
                 <Text
                   className={`${
-                    focused ? "font-psemibold" : "font-pregular"
+                    focused && isVerified ? "font-psemibold" : "font-pregular"
                   } text-lg mt-1`}
-                  style={{ color: color }}
+                  style={{ color: isVerified ? color : "#CDCDE0" }}
                 >
                   New Entry
                 </Text>
               </View>
             ),
+            tabBarItemStyle: {
+              pointerEvents: isVerified ? "auto" : "none",
+            },
           }}
         />
         <Tabs.Screen
@@ -109,24 +116,27 @@ const TabsLayout = () => {
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
                 icons={icons.profile}
-                color={color}
+                color={isVerified ? color : "#CDCDE0"}
                 name="Profile"
-                focused={focused}
+                focused={focused && isVerified}
                 size="w-6 h-6"
               />
             ),
+            tabBarItemStyle: {
+              pointerEvents: isVerified ? "auto" : "none",
+            },
           }}
         />
         <Tabs.Screen
-          name="settings"
+          name="account"
           options={{
-            title: "Settings",
+            title: "account",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icons={icons.menu}
+                icons={icons.profile}
                 color={color}
-                name="Settings"
+                name="Account"
                 focused={focused}
                 size="w-6 h-6"
               />
