@@ -14,7 +14,6 @@ import {
   SERVICE_NAME_FOR_ROLE_STORAGE,
   SERVICE_NAME_FOR_ISVERIFIED_STORAGE,
 } from "@/constant/expoStore";
-import { set } from "mongoose";
 interface User {
   name: string;
   email: string;
@@ -106,7 +105,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             getFromSecureStore(SERVICE_NAME_FOR_ROLE_STORAGE),
             getFromSecureStore(SERVICE_NAME_FOR_ISVERIFIED_STORAGE),
           ]);
-
+        if (storedToken && isTokenValid(storedToken)) {
+          await signOut();
+          return;
+        }
         setToken(storedToken);
         setUser(storedUser ? JSON.parse(storedUser) : null);
         setRole(storedRole);
