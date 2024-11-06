@@ -12,6 +12,7 @@ const _layout = () => {
         {/* <Stack.Screen name="Collapsible" options={{headerShown:false}}/> */}
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="(newEntry)" options={{ headerShown: false }} /> */}
         {/* <Stack.Screen name='/Search/[query]' options={{headerShown:false}}/> */}
       </Stack>
       <Toast />

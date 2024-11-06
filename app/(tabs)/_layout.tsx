@@ -39,10 +39,25 @@ const TabsLayout = () => {
             backgroundColor: "#161622",
             borderTopColor: "#232533",
             borderTopWidth: 1,
-            height: 74,
+            height: 74, // Increased height for better touch targets
+            paddingHorizontal: 16, // Add horizontal padding
+            paddingBottom: 20, // Add bottom padding for better reachability
+            paddingTop: 12, // Add top padding
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            position: 'absolute', // Ensure it stays at bottom
+            bottom: 0,
+            left: 0,
+            right: 0,
+            elevation: 8, // Add shadow for Android
+            shadowColor: '#000', // Shadow for iOS
+            shadowOffset: {
+              width: 0,
+              height: -2,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
           },
         }}
       >
@@ -57,9 +72,12 @@ const TabsLayout = () => {
                 color={color}
                 name="Home"
                 focused={focused}
-                size="w-6 h-6"
+                size="w-7 h-7" // Slightly larger icons
               />
             ),
+            tabBarItemStyle: {
+              paddingTop: 12, // Add padding to individual tabs
+            }
           }}
         />
         <Tabs.Screen
@@ -73,37 +91,11 @@ const TabsLayout = () => {
                 color={isVerified ? color : "#CDCDE0"}
                 name="Bookmarks"
                 focused={focused && isVerified}
-                size="w-6 h-6"
+                size="w-7 h-7"
               />
             ),
             tabBarItemStyle: {
-              pointerEvents: isVerified ? "auto" : "none",
-            },
-          }}
-        />
-        <Tabs.Screen
-          name="create"
-          options={{
-            title: "Create",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <View className="flex flex-col items-center justify-center mb-4 ml-1 w-full ">
-                <Iconsplus
-                  name="pluscircle"
-                  size={60}
-                  color={isVerified && focused ? "#FFA001" : "#d3d3d3"}
-                />
-                <Text
-                  className={`${
-                    focused && isVerified ? "font-psemibold" : "font-pregular"
-                  } text-lg mt-1`}
-                  style={{ color: isVerified ? color : "#CDCDE0" }}
-                >
-                  New Entry
-                </Text>
-              </View>
-            ),
-            tabBarItemStyle: {
+              paddingTop: 12,
               pointerEvents: isVerified ? "auto" : "none",
             },
           }}
@@ -119,10 +111,11 @@ const TabsLayout = () => {
                 color={isVerified ? color : "#CDCDE0"}
                 name="Profile"
                 focused={focused && isVerified}
-                size="w-6 h-6"
+                size="w-7 h-7"
               />
             ),
             tabBarItemStyle: {
+              paddingTop: 12,
               pointerEvents: isVerified ? "auto" : "none",
             },
           }}
@@ -130,7 +123,7 @@ const TabsLayout = () => {
         <Tabs.Screen
           name="account"
           options={{
-            title: "account",
+            title: "Account",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
@@ -138,9 +131,12 @@ const TabsLayout = () => {
                 color={color}
                 name="Account"
                 focused={focused}
-                size="w-6 h-6"
+                size="w-7 h-7"
               />
             ),
+            tabBarItemStyle: {
+              paddingTop: 12,
+            }
           }}
         />
       </Tabs>
