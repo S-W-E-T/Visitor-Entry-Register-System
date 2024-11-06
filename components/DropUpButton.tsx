@@ -21,7 +21,7 @@ const DropUpButton = () => {
   // Animation value for rotation
   const rotateAnimation = useRef(new Animated.Value(0)).current;
 
-  const options = ["Hostel-1","Kautilya", "Girls", "Main"];
+  const options = ["Hostel-1","Kautilya Boys Hostel", "Kadimbini Girls Hostel", "Main Gate"];
 
   const toggleMenu = () => {
     const toValue = isOpen ? 0 : 1;
