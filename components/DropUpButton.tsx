@@ -20,17 +20,24 @@ const DropUpButton = () => {
 
   // Animation value for rotation
   const rotateAnimation = useRef(new Animated.Value(0)).current;
-
+  const fadeAnimation = useRef(new Animated.Value(0)).current;
   const options = ["Hostel-1","Kautilya Boys Hostel", "Kadimbini Girls Hostel", "Main Gate"];
 
   const toggleMenu = () => {
     const toValue = isOpen ? 0 : 1;
-    Animated.spring(rotateAnimation, {
-      toValue,
-      useNativeDriver: true,
-      friction: 8,
-      tension: 40,
-    }).start();
+    Animated.parallel([
+      Animated.spring(rotateAnimation, {
+        toValue,
+        useNativeDriver: true,
+        friction: 8,
+        tension: 40,
+      }),
+      Animated.timing(fadeAnimation, {
+        toValue,
+        duration: 200,
+        useNativeDriver: true,
+      })
+    ]).start();
     setIsOpen(!isOpen);
   };
 
@@ -80,8 +87,100 @@ const DropUpButton = () => {
     }
   };
 
+  const handleSubmitEntry = async () => {
+    try {
+      // Validate required fields
+      if (!name || !selectedOption || !date || !inTime || !outTime) {
+        Alert.alert("Error", "Please fill in all required fields");
+        return;
+      }
+  
+      // Format the date and times
+      const formattedDate = date.toISOString().split('T')[0];
+      const formattedInTime = inTime.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      const formattedOutTime = outTime.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+  
+      // Prepare the entry data
+      const newEntry = {
+        id: Date.now().toString(),
+        name: name,
+        time: `${formattedInTime} - ${formattedOutTime}`,
+        purpose: selectedOption,
+        description: description || "NA",
+        date: formattedDate,
+        gate: activeGate,
+        rawData: {
+          inTime: inTime.toISOString(),
+          outTime: outTime.toISOString()
+        }
+      };
+  
+      // Here you'll make your API call to the backend
+      // const response = await axios.post('/api/entries', newEntry);
+      
+      // Update local state with new entry
+      setLocalEntryData(prevData => {
+        const updatedData = { ...prevData };
+        if (!updatedData[activeGate]) {
+          updatedData[activeGate] = {};
+        }
+        if (!updatedData[activeGate][formattedDate]) {
+          updatedData[activeGate][formattedDate] = [];
+        }
+        updatedData[activeGate][formattedDate] = [
+          newEntry,
+          ...updatedData[activeGate][formattedDate]
+        ];
+        return updatedData;
+      });
+  
+      // Reset form and show success message
+      setShowForm(false);
+      setDate(new Date());
+      setInTime(new Date());
+      setOutTime(new Date());
+      setSelectedOption("");
+      setShowDatePicker(false);
+      setShowInTimePicker(false);
+      setShowOutTimePicker(false);
+      
+      Alert.alert("Success", "Entry added successfully");
+  
+    } catch (error) {
+      console.error('Error submitting entry:', error);
+      Alert.alert("Error", "Failed to submit entry. Please try again.");
+    }
+  };
+  
+
+
   return (
-    <View>
+    <View className='relative'>
+      {/* Fade Background */}
+      {isOpen && (
+        <Animated.View 
+          style={{
+            opacity: fadeAnimation,
+            position: 'absolute',
+            top: -1000,
+            left: -1000,
+            right: -1000,
+            bottom: -1000,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 40,
+          }}
+          pointerEvents={isOpen ? "auto" : "none"}
+          onTouchStart={() => toggleMenu()}
+        />
+      )}
       {/* Form Modal */}
       <Modal
         animationType="slide"
@@ -202,7 +301,9 @@ const DropUpButton = () => {
             )}
 
             <TouchableOpacity
-              onPress={() => {setShowForm(false);
+              onPress={() => {
+                handleSubmitEntry();
+                setShowForm(false);
                 setDate(new Date());
                 setInTime(new Date());
                 setOutTime(new Date());
@@ -222,7 +323,10 @@ const DropUpButton = () => {
 
       {/* Dropup Menu */}
       {isOpen && (
-        <View className="absolute bottom-20 right-4 w-32 bg-white rounded-lg shadow-lg overflow-hidden">
+        <View 
+          className="absolute bottom-20 right-4 w-32 bg-white rounded-lg shadow-lg overflow-hidden"
+          style={{ zIndex: 50 }}
+        >
           {options.map((option) => (
             <TouchableOpacity
               key={option}
@@ -238,7 +342,7 @@ const DropUpButton = () => {
       )}
 
       {/* Main Button */}
-      <View className="justify-end flex flex-row">
+      <View className="justify-end flex flex-row"  style={{ zIndex: 50 }}>
         <TouchableOpacity
           onPress={toggleMenu}
           className="bg-secondary h-14 w-14 rounded-full justify-center items-center shadow-lg"
