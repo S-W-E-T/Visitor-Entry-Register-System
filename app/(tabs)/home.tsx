@@ -15,6 +15,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "@/context/AuthContext";
 import DropUpButton from "@/components/DropUpButton";
 import { Feather } from "@expo/vector-icons";
+import useFetchPosts from "@/hooks/postHooks/useFetchPosts";
 
 const VerifiedHome = () => {
   const [activeGate, setActiveGate] = useState("Main");
@@ -27,7 +28,9 @@ const VerifiedHome = () => {
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
+  const { posts, loading, refetchPosts } = useFetchPosts();
+  // posts has the posts data fetched from the server here
+  console.log("posts on home page fom server", posts);
   const entryData = {
     Main: {
       "2024-03-11": [
@@ -88,7 +91,7 @@ const VerifiedHome = () => {
           description: "Family visit during college fest",
         },
       ],
-    }
+    },
   };
 
   const [localEntryData, setLocalEntryData] = useState(entryData);
@@ -101,16 +104,16 @@ const VerifiedHome = () => {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    if (dateString === today.toISOString().split('T')[0]) {
+    if (dateString === today.toISOString().split("T")[0]) {
       return "Today";
-    } else if (dateString === yesterday.toISOString().split('T')[0]) {
+    } else if (dateString === yesterday.toISOString().split("T")[0]) {
       return "Yesterday";
     } else {
-      return date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      return date.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
     }
   };
@@ -188,22 +191,23 @@ const VerifiedHome = () => {
   const handleSave = () => {
     setLocalEntryData((prevData) => {
       const updatedGateData = { ...prevData[activeGate] };
-      
+
       // Find the date that contains the entry being edited
-      const dateWithEntry = Object.entries(updatedGateData).find(([date, entries]) =>
-        entries?.some(entry => entry.id === editedEntry.id)
+      const dateWithEntry = Object.entries(updatedGateData).find(
+        ([date, entries]) =>
+          entries?.some((entry) => entry.id === editedEntry.id)
       );
 
       if (dateWithEntry) {
         const [date, entries] = dateWithEntry;
-        updatedGateData[date] = entries.map(entry =>
+        updatedGateData[date] = entries.map((entry) =>
           entry.id === editedEntry.id ? editedEntry : entry
         );
       }
 
       return {
         ...prevData,
-        [activeGate]: updatedGateData
+        [activeGate]: updatedGateData,
       };
     });
 
@@ -385,117 +389,123 @@ const VerifiedHome = () => {
   );
 
   // Grid Row Component
-    // Grid Row Component
-    const GridRow = ({ data, isHeader = false }) => (
-      <TouchableOpacity
-        onPress={() => !isHeader && handleRowPress(data)}
-        className={`flex-row border-b border-gray-200 px-4 py-3 ${
-          isHeader ? "bg-gray-50" : "bg-white"
-        }`}
-        disabled={isHeader}
-      >
-        <View className="flex-1">
-          <Text
-            className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
-            numberOfLines={1}
+  // Grid Row Component
+  const GridRow = ({ data, isHeader = false }) => (
+    <TouchableOpacity
+      onPress={() => !isHeader && handleRowPress(data)}
+      className={`flex-row border-b border-gray-200 px-4 py-3 ${
+        isHeader ? "bg-gray-50" : "bg-white"
+      }`}
+      disabled={isHeader}
+    >
+      <View className="flex-1">
+        <Text
+          className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
+          numberOfLines={1}
+        >
+          {isHeader ? "NAME" : data.name}
+        </Text>
+      </View>
+      <View className="flex-1 mr-1">
+        <Text
+          className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
+          numberOfLines={1}
+        >
+          {isHeader ? "IN TIME - OUT TIME" : data.time}
+        </Text>
+      </View>
+      <View className="flex-1 flex-row items-center justify-between">
+        <Text
+          className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
+          numberOfLines={1}
+        >
+          {isHeader ? "PURPOSE" : data.purpose}
+        </Text>
+        {!isHeader && (
+          <TouchableOpacity
+            onPress={(e) => {
+              e.stopPropagation();
+              handleRowPress(data);
+            }}
           >
-            {isHeader ? "NAME" : data.name}
-          </Text>
-        </View>
-        <View className="flex-1 mr-1">
-          <Text
-            className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
-            numberOfLines={1}
-          >
-            {isHeader ? "IN TIME - OUT TIME" : data.time}
-          </Text>
-        </View>
-        <View className="flex-1 flex-row items-center justify-between">
-          <Text
-            className={`text-sm ${isHeader ? "font-semibold" : "text-gray-700"}`}
-            numberOfLines={1}
-          >
-            {isHeader ? "PURPOSE" : data.purpose}
-          </Text>
-          {!isHeader && (
-            <TouchableOpacity
-              onPress={(e) => {
-                e.stopPropagation();
-                handleRowPress(data);
-              }}
-            >
-              <Feather name="eye" size={16} color="#666" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  
+            <Feather name="eye" size={16} color="#666" />
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-[#f2f2f2]">
-    <GestureHandlerRootView>
-      <ScrollView contentContainerClassName={{ height: "100%" }}>
-        <View className="border w-full justify-center items-center min-h-[100vh] p-4">
-          <View className="border justify-center items-center bg-white p-6 rounded-xl shadow-md w-3/4">
-            <Text className="text-xl font-bold mb-3">
-              Welcome to the App!
-            </Text>
-            <Text className="text-base text-center text-gray-600">
-              This is the home page for verified users.
-            </Text>
-          </View>
-          <View className="absolute bottom-5 right-1 w-full px-4 my-6 z-50">
-            <DropUpButton />
-          </View>
-          <View className="w-full p-5">
-            <Text className="font-pbold mb-3">Entry Details</Text>
+      <GestureHandlerRootView>
+        <ScrollView contentContainerClassName={{ height: "100%" }}>
+          <View className="border w-full justify-center items-center min-h-[100vh] p-4">
+            <View className="border justify-center items-center bg-white p-6 rounded-xl shadow-md w-3/4">
+              <Text className="text-xl font-bold mb-3">
+                Welcome to the App!
+              </Text>
+              <Text className="text-base text-center text-gray-600">
+                This is the home page for verified users.
+              </Text>
+            </View>
+            <View className="absolute bottom-5 right-1 w-full px-4 my-6 z-50">
+              <DropUpButton />
+            </View>
+            <View className="w-full p-5">
+              <Text className="font-pbold mb-3">Entry Details</Text>
 
-            <View className="flex-1 p-4 bg-white">
-              {/* Gate selection buttons */}
-              <View className="flex-row justify-between mb-4 space-x-2">
-                {gates.map((gate) => (
-                  <TouchableOpacity
-                    key={gate}
-                    onPress={() => setActiveGate(gate)}
-                    className={`flex-1 p-2 rounded-md justify-center items-center
+              <View className="flex-1 p-4 bg-white">
+                {/* Gate selection buttons */}
+                <View className="flex-row justify-between mb-4 space-x-2">
+                  {gates.map((gate) => (
+                    <TouchableOpacity
+                      key={gate}
+                      onPress={() => setActiveGate(gate)}
+                      className={`flex-1 p-2 rounded-md justify-center items-center
                       ${activeGate === gate ? "bg-secondary" : "bg-gray-100"}`}
-                  >
-                    <Text
-                      className={`text-sm 
-                        ${activeGate === gate ? "font-psemibold" : "text-gray-700"}`}
                     >
-                      {gate}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+                      <Text
+                        className={`text-sm 
+                        ${
+                          activeGate === gate
+                            ? "font-psemibold"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        {gate}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
 
-              {/* Entries Grid */}
-              <View className="flex-1 border border-gray-200 rounded-lg overflow-hidden">
-                {/* Header Row */}
-                <GridRow isHeader={true} />
+                {/* Entries Grid */}
+                <View className="flex-1 border border-gray-200 rounded-lg overflow-hidden">
+                  {/* Header Row */}
+                  <GridRow isHeader={true} />
 
-                {/* Scrollable Content with Date Groups */}
-                <ScrollView className="flex-1">
+                  {/* Scrollable Content with Date Groups */}
+                  <ScrollView className="flex-1">
                     {Object.entries(localEntryData[activeGate] || {})
-                      .sort(([dateA], [dateB]) => new Date(dateB) - new Date(dateA))
+                      .sort(
+                        ([dateA], [dateB]) => new Date(dateB) - new Date(dateA)
+                      )
                       .map(([date, entries]) => (
                         <View key={date}>
-                          <DateHeader date={date}/>
+                          <DateHeader date={date} />
                           {(entries || []).map((entry) => (
                             <GridRow key={entry.id} data={entry} />
                           ))}
                         </View>
                       ))}
                   </ScrollView>
+                </View>
+                <DetailModal />
               </View>
-              <DetailModal />
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </GestureHandlerRootView>
-  </SafeAreaView>
+        </ScrollView>
+      </GestureHandlerRootView>
+    </SafeAreaView>
   );
 };
 
