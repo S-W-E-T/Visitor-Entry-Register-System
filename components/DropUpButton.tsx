@@ -14,6 +14,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { Clock, Calendar } from "lucide-react-native";
 import useCreatePost from "@/hooks/postHooks/useCreatePost";
+import useFetchPosts from "@/hooks/postHooks/useFetchPosts";
 
 export enum Location {
   MAIN = "MAIN",
@@ -195,6 +196,7 @@ const EntryForm = ({ visible, onClose, onSubmit, data, setData, loading }) => (
 const DropUpButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const { refetchPosts } = useFetchPosts();
   const [data, setData] = useState({
     name: "",
     purpose: "",
@@ -215,6 +217,7 @@ const DropUpButton = () => {
       description: "",
       outTime: undefined,
     });
+    refetchPosts();
     // Alert.alert("Success", "Entry added successfully");
   });
   const rotateAnimation = useRef(new Animated.Value(0)).current;
