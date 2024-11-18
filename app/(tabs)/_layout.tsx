@@ -5,6 +5,7 @@ import { icons } from "../../constants";
 import Icons from "react-native-vector-icons/Ionicons";
 import Iconsplus from "react-native-vector-icons/AntDesign";
 import { useAuth } from "@/context/AuthContext";
+import AccessControl from "./accessControl";
 
 const TabIcon = ({ icons, color, name, focused, size }) => {
   return (
@@ -26,7 +27,57 @@ const TabIcon = ({ icons, color, name, focused, size }) => {
 };
 
 const TabsLayout = () => {
-  const { isVerified } = useAuth();
+  const { isVerified, role } = useAuth();
+  
+  const renderBookmarkTab = () => {
+    if (role === 'ADMIN') {
+      return (
+        <Tabs.Screen
+          name="access-control"
+          options={{
+            title: "AccessControl",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icons={icons.bookmark}
+                color={isVerified ? color : "#CDCDE0"}
+                name="AccessControl"
+                focused={focused && isVerified}
+                size="w-7 h-7"
+              />
+            ),
+            tabBarItemStyle: {
+              paddingTop: 12,
+              pointerEvents: isVerified ? "auto" : "none",
+            },
+          }}
+        />
+      );
+    }
+
+    return (
+      <Tabs.Screen
+        name="bookmark"
+        options={{
+          title: "Bookmarks",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icons={icons.bookmark}
+              color={isVerified ? color : "#CDCDE0"}
+              name="Bookmarks"
+              focused={focused && isVerified}
+              size="w-7 h-7"
+            />
+          ),
+          tabBarItemStyle: {
+            paddingTop: 12,
+            pointerEvents: isVerified ? "auto" : "none",
+          },
+        }}
+      />
+    );
+  };
 
   return (
     <>
@@ -80,26 +131,7 @@ const TabsLayout = () => {
             }
           }}
         />
-        <Tabs.Screen
-          name="bookmark"
-          options={{
-            title: "Bookmarks",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icons={icons.bookmark}
-                color={isVerified ? color : "#CDCDE0"}
-                name="Bookmarks"
-                focused={focused && isVerified}
-                size="w-7 h-7"
-              />
-            ),
-            tabBarItemStyle: {
-              paddingTop: 12,
-              pointerEvents: isVerified ? "auto" : "none",
-            },
-          }}
-        />
+        {renderBookmarkTab()}
         <Tabs.Screen
           name="profile"
           options={{

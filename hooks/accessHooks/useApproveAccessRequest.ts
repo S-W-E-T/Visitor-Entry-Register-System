@@ -32,7 +32,7 @@ const useApproveAccessRequest = (
       position: "top",
     });
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${API_URL}/api/v1/access/approve`,
         details,
         {
